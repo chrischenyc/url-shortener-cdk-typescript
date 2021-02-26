@@ -1,13 +1,19 @@
-import { expect as expectCDK, matchTemplate, MatchStyle } from '@aws-cdk/assert';
+import { expect as expectCDK, MatchStyle, matchTemplate } from '@aws-cdk/assert';
 import * as cdk from '@aws-cdk/core';
+
 import * as UrlShortener from '../lib/url-shortener-stack';
 
 test('Empty Stack', () => {
-    const app = new cdk.App();
-    // WHEN
-    const stack = new UrlShortener.UrlShortenerStack(app, 'MyTestStack');
-    // THEN
-    expectCDK(stack).to(matchTemplate({
-      "Resources": {}
-    }, MatchStyle.EXACT))
+  const app = new cdk.App();
+  // WHEN
+  const stack = new UrlShortener.UrlShortenerStack(app, 'MyTestStack');
+  // THEN
+  expectCDK(stack).to(
+    matchTemplate(
+      {
+        Resources: {},
+      },
+      MatchStyle.EXACT,
+    ),
+  );
 });
