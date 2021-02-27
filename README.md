@@ -33,4 +33,5 @@ make sure your CLI has been granted access to AWS, `AWS_PROFILE` and `AWS_REGION
 
 - `yarn`          - install dependencies
 - `cdk bootstrap` - if you haven't got stack `CDKToolkit` deployed on CloudFormation
-- `cdk deploy`    - deploy this stack `UrlShortenerStack` to your default AWS account/region
+- `cdk deploy`    - deploy the dev version of this stack `UrlShortenerStack-dev` to your default AWS account/region
+- `ENV=prod cdk deploy`    - deploy the production version of this stack `UrlShortenerStack-prod` to your default AWS account/region

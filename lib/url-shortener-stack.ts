@@ -4,6 +4,8 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import * as lambdaNodejs from '@aws-cdk/aws-lambda-nodejs';
 import * as cdk from '@aws-cdk/core';
 
+const env = process.env.ENV || 'dev';
+
 export class UrlShortenerStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -26,7 +28,7 @@ export class UrlShortenerStack extends cdk.Stack {
     });
 
     // Lambda function
-    const backend = new lambdaNodejs.NodejsFunction(this, 'handler', {
+    const handler = new lambdaNodejs.NodejsFunction(this, 'handler', {
       entry: 'lambda/url-shortener.ts',
       handler: 'handler',
       runtime: lambda.Runtime.NODEJS_14_X,
@@ -35,11 +37,17 @@ export class UrlShortenerStack extends cdk.Stack {
       },
     });
 
-    table.grantReadWriteData(backend);
+    table.grantReadWriteData(handler);
 
-    // API Gateway
+    // API Gateway with stageName defined
     new apigateway.LambdaRestApi(this, 'url-shortener-api', {
-      handler: backend,
+      handler,
+      deployOptions: {
+        stageName: env,
+      },
+      defaultCorsPreflightOptions: {
+        allowOrigins: apigateway.Cors.ALL_ORIGINS,
+      },
     });
   }
 }

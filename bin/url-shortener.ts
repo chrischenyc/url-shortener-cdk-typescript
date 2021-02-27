@@ -7,4 +7,6 @@ import { UrlShortenerStack } from '../lib/url-shortener-stack';
 
 const app = new cdk.App();
 
-new UrlShortenerStack(app, 'UrlShortenerStack');
+const env = process.env.ENV || 'dev';
+
+new UrlShortenerStack(app, `UrlShortenerStack-${env}`);
