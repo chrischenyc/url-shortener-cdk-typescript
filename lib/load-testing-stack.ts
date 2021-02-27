@@ -26,6 +26,6 @@ export class LoadTestingStack extends cdk.Stack {
 
     const url = 'https://9tbwbgter9.execute-api.ap-southeast-2.amazonaws.com/dev/1543fa06';
 
-    new Pinger(this, `LoadTesting-${env}`, vpc, url, 2);
+    new Pinger(this, `LoadTesting-${env}`, vpc, url, 10);
   }
 }
