@@ -3,6 +3,7 @@ import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as lambda from '@aws-cdk/aws-lambda';
 import * as lambdaNodejs from '@aws-cdk/aws-lambda-nodejs';
 import * as cdk from '@aws-cdk/core';
+import { Watchful } from 'cdk-watchful';
 
 const env = process.env.ENV || 'dev';
 
@@ -49,5 +50,9 @@ export class UrlShortenerStack extends cdk.Stack {
         allowOrigins: apigateway.Cors.ALL_ORIGINS,
       },
     });
+
+    // monitoring
+    const watchful = new Watchful(this, 'monitoring', { alarmEmail: 'chris@capturedlabs.com' });
+    watchful.watchScope(this);
   }
 }
