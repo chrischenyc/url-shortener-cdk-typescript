@@ -1,5 +1,9 @@
 {
   "cSpell.words": [
+    "esbuild",
     "shortener"
-  ]
+  ],
+  "files.exclude": {
+    "**/cdk.out": true
+}
 }

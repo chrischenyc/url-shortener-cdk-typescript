@@ -1,6 +1,13 @@
 {
-  "name": "url-shortener",
+  "name": "url-shortener-cdk-typescript",
+  "description": "A TypeScript implementation of 'Infrastructure is Code with the AWS CDK - AWS Online Tech Talks' demo project",
   "version": "0.1.0",
+  "license": "MIT",
+  "author": "Chris Chen <chris@capturedlabs.com> (http://capturedlabs.com)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrischenyc/url-shortener-cdk-typescript.git"
+  },
   "bin": {
     "url-shortener": "bin/url-shortener.js"
   },
@@ -9,7 +16,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --fix"
+    "lint": "eslint '*/**/*.{ts,tsx}' --fix",
+    "postinstall": "husky install"
   },
   "devDependencies": {
     "@aws-cdk/assert": "1.91.0",
@@ -20,16 +28,14 @@
     "@typescript-eslint/eslint-plugin": "^4.15.0",
     "@typescript-eslint/parser": "^4.15.0",
     "aws-cdk": "1.91.0",
+    "esbuild": "0",
     "eslint": "^7.20.0",
     "eslint-config-prettier": "^7.2.0",
     "eslint-plugin-jest": "^24.1.3",
     "eslint-plugin-prettier": "^3.3.1",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
-    "husky": "^5.0.9",
+    "husky": "^5.1.1",
     "jest": "^26.4.2",
-    "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
     "ts-jest": "^26.2.0",
     "ts-node": "^9.0.0",
@@ -39,19 +45,10 @@
     "@aws-cdk/aws-apigateway": "^1.91.0",
     "@aws-cdk/aws-dynamodb": "^1.91.0",
     "@aws-cdk/aws-lambda": "^1.91.0",
+    "@aws-cdk/aws-lambda-nodejs": "^1.91.0",
     "@aws-cdk/core": "1.91.0",
     "aws-sdk": "^2.852.0",
     "source-map-support": "^0.5.16",
     "uuid": "^8.3.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts,tsx}": [
-      "eslint --fix"
-    ]
   }
 }

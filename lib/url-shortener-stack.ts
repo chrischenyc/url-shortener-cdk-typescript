@@ -1,6 +1,7 @@
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as dynamodb from '@aws-cdk/aws-dynamodb';
 import * as lambda from '@aws-cdk/aws-lambda';
+import * as lambdaNodejs from '@aws-cdk/aws-lambda-nodejs';
 import * as cdk from '@aws-cdk/core';
 
 export class UrlShortenerStack extends cdk.Stack {
@@ -16,15 +17,22 @@ export class UrlShortenerStack extends cdk.Stack {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
 
+    table.addGlobalSecondaryIndex({
+      partitionKey: {
+        name: 'targetUrl',
+        type: dynamodb.AttributeType.STRING,
+      },
+      indexName: 'targetUrl',
+    });
+
     // Lambda function
-    const backend = new lambda.Function(this, 'handler', {
-      code: lambda.AssetCode.fromAsset('lambda'),
-      handler: 'url-shortener.handler',
+    const backend = new lambdaNodejs.NodejsFunction(this, 'handler', {
+      entry: 'lambda/url-shortener.ts',
+      handler: 'handler',
       runtime: lambda.Runtime.NODEJS_14_X,
       environment: {
         TABLE_NAME: table.tableName,
       },
-      tracing: lambda.Tracing.ACTIVE,
     });
 
     table.grantReadWriteData(backend);

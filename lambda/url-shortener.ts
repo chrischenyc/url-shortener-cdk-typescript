@@ -1,15 +1,16 @@
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
-// import * as uuid from 'uuid';
+import * as uuid from 'uuid';
 
 const TableName = process.env.TABLE_NAME!;
 
 export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   if (event.queryStringParameters?.targetUrl) {
+    const shortUrl = await createShortUrl(event.queryStringParameters.targetUrl, event);
     return {
       statusCode: 200,
-      headers: { 'Content-Type': 'text/plain' },
-      body: await createShortUrl(event.queryStringParameters.targetUrl, event),
+      headers: { 'Content-Type': 'text/html' },
+      body: `<a href="${shortUrl}">${shortUrl}</a>`,
     };
   }
 
@@ -39,19 +40,35 @@ export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayPr
 };
 
 const createShortUrl = async (targetUrl: string, event: APIGatewayProxyEvent): Promise<string> => {
-  // const id = uuid.v4().slice(0, 8);
-  const id = uuidv4().slice(0, 8);
-
   const dynamoDb = new AWS.DynamoDB.DocumentClient();
-  await dynamoDb
-    .put({
+
+  const { Items } = await dynamoDb
+    .query({
       TableName,
-      Item: {
-        id,
-        targetUrl,
+      IndexName: 'targetUrl',
+      KeyConditionExpression: 'targetUrl = :t',
+      ExpressionAttributeValues: {
+        ':t': targetUrl,
       },
     })
     .promise();
+
+  let id;
+  if (Items?.length) {
+    id = Items[0].id;
+  } else {
+    id = uuid.v4().slice(0, 8);
+
+    await dynamoDb
+      .put({
+        TableName,
+        Item: {
+          id,
+          targetUrl,
+        },
+      })
+      .promise();
+  }
 
   const redirectUrl = 'https://' + event.requestContext.domainName + event.requestContext.path + id;
 
@@ -74,12 +91,4 @@ const readShortUrl = async (proxy: string): Promise<string | null> => {
   }
 
   return null;
-};
-
-const uuidv4 = () => {
-  return 'xxxxxxxx-xxxx-5xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
 };
