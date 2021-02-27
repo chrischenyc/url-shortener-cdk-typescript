@@ -40,7 +40,7 @@ export class UrlShortenerStack extends cdk.Stack {
     table.grantReadWriteData(handler);
 
     // API Gateway with stageName defined
-    new apigateway.LambdaRestApi(this, 'url-shortener-api', {
+    new apigateway.LambdaRestApi(this, `url-shortener-${env}-api`, {
       handler,
       deployOptions: {
         stageName: env,
